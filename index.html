@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Envoyer message Discord</title>
+</head>
+<body>
+<h2>Envoyer un message</h2>
+<textarea id="msg" placeholder="Ton message"></textarea><br>
+<button onclick="sendMessage()">Envoyer</button>
+
+<script>
+async function getIP() {
+    const res = await fetch('https://api.ipify.org?format=json');
+    const data = await res.json();
+    return data.ip;
+}
+
+async function sendMessage() {
+    const message = document.getElementById('msg').value;
+    const ip = await getIP();
+
+    const res = await fetch('http://localhost:3000/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ip, message })
+    });
+
+    const data = await res.json();
+    alert(`Message envoyé en tant que ${data.username}`);
+}
+</script>
+</body>
+</html>
