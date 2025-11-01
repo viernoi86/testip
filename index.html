@@ -1,34 +1,43 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Envoyer message Discord</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon IP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #e0f7fa;
+        }
+        #ip {
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            font-size: 28px;
+        }
+    </style>
 </head>
 <body>
-<h2>Envoyer un message</h2>
-<textarea id="msg" placeholder="Ton message"></textarea><br>
-<button onclick="sendMessage()">Envoyer</button>
+    <div id="ip">Chargement de votre IP...</div>
 
-<script>
-async function getIP() {
-    const res = await fetch('https://api.ipify.org?format=json');
-    const data = await res.json();
-    return data.ip;
-}
+    <script>
+        async function afficherIP() {
+            try {
+                const response = await fetch('https://api.ipify.org?format=json');
+                const data = await response.json();
+                document.getElementById('ip').textContent = "Votre IP : " + data.ip;
+            } catch (err) {
+                document.getElementById('ip').textContent = "Impossible de récupérer l'IP";
+                console.error(err);
+            }
+        }
 
-async function sendMessage() {
-    const message = document.getElementById('msg').value;
-    const ip = await getIP();
-
-    const res = await fetch('http://localhost:3000/send', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ip, message })
-    });
-
-    const data = await res.json();
-    alert(`Message envoyé en tant que ${data.username}`);
-}
-</script>
+        afficherIP();
+    </script>
 </body>
 </html>
